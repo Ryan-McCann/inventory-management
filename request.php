@@ -77,7 +77,7 @@ if(isset($_POST['token']) && isset($_POST['type']))
 			break;
 		case 'createShelf':
 			if(isset($_POST['label']))
-				createShelf($label, $pdo);
+				createShelf($_POST['label'], $pdo);
 			break;
 		case 'createItem':
 			if(isset($_POST['description']) && isset($_POST['barcode']))
