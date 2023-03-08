@@ -193,7 +193,7 @@ function createShelf($label, $pdo)
 		$stmt->execute([$barcode]);
 		$row_count = $stmt->rowCount();
 	}
-	while ($row_count)
+	while ($row_count);
 	
 	$stmt = $pdo->prepare('INSERT INTO shelves (label, barcode) VALUES (?, ?)');
 	$stmt->execute([$label, $barcode]);
