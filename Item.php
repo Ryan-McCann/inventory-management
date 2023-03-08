@@ -1,11 +1,12 @@
 <?php
 class Item
 {
-	public $id;
-	public $description;
-	public $minimum;
-	public $maximum;
-	public $quantity;
-	public $barcodes;
+	public $id = -1;
+	public $description = '';
+	public $minimum = 0;
+	public $maximum = 0;
+	public $quantity = 0;
+	public $barcodes = array();
+	public $shelves = array();
 }
 ?>
