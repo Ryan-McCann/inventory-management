@@ -134,7 +134,7 @@ if(isset($_POST['token']) && isset($_POST['type']))
 			}
 			break;
 		case 'removeItem':
-			if(isset($_POST['id']) && isset($_POST['quantity'] && isset($_POST['shelfId']))
+			if(isset($_POST['id']) && isset($_POST['quantity']) && isset($_POST['shelfId']))
 				removeItem($_POST['id'], $_POST['shelfId'], $_POST['quantity'], $pdo);
 			break;
 		case 'deleteItem':
