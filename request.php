@@ -185,9 +185,7 @@ function createShelf($label, $pdo)
 	// pseudo-randomly generate an unused barcode
 	do
 	{
-		$numbers = range(10000000, 99999999);
-		$shuffle($numbers);
-		$barcode = $numbers[0];
+		$barcode = rand(pow(10, 7), pow(10, 8)-1);
 		
 		$stmt = $pdo->prepare('SELECT * FROM shelves WHERE barcode = ?');
 		$stmt->execute([$barcode]);
