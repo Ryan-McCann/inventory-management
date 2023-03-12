@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<script type="text/javascript">
+	function toggleLogin() {
+		let element = document.getElementById("login");
+		if(element.style.display == "none") {
+			element.style.display = "block";
+			document.getElementById("register").style.display = "none";
+		}
+		else {
+			element.style.display = "none";
+			document.getElementById("register").style.display = "block";
+		}
+	}
+	
+	function comparePass() {
+		let pass = document.getElementById("password");
+		let confirm = document.getElementById("confirm");
+		
+		if(confirm.value) {
+			if(pass.value != confirm.value) {
+				let nomatch = document.getElementById("nomatch");
+				nomatch.style.display = "block";
+				return false;
+			}
+		}
+	}
+</script>
+
+<body>
+<form action="login.php" method="post" id="login">
+	<p><b>Login:</b></p>
+	<p>
+		<label>Email:</label><br>
+		<input type="text" name="email" required>
+	</p>
+	<p>
+		<label>Password:</label><br>
+		<input type="password" name="password" required>
+	</p>
+	<p>
+		<button>Login</button> <a href="javascript:toggleLogin()">Register</a>
+	</p>
+</form>
+
+<form action="register.php" method="post" id="register" onsubmit="return comparePass()" style="display:none">
+	<p><b>Register:</b></p>
+	<p>
+		<label>Email:</label><br>
+		<input type="text" name="email" required>
+	</p>
+	<p>
+		<label>Password:</label><br>
+		<input type="password" name="password" id="password" required>
+	</p>
+	<p>
+		<label>Confirm Password:</label><br>
+		<input type="password" name="confirm" id="confirm" required> <label id="nomatch" style="display:none">Error: Passwords don't match.</label>
+	</p>
+	<p>
+		<button>Register</button> <a href="javascript:toggleLogin()">Login</a>
+	</p>
+</form>
+</body>
+</html>

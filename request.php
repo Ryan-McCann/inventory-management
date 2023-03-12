@@ -1,6 +1,6 @@
 <?php
-require("Item.php");
-require("Shelf.php");
+require("includes/Item.php");
+require("includes/Shelf.php");
 
 header('Content-Type: application/json');
 
@@ -72,7 +72,7 @@ if(isset($_POST['token']) && isset($_POST['type']))
 			}
 			
 			// echo result as json
-			echo(json_encode(get_object_vars($item), JSON_PRETTY_PRINT));
+			echo(json_encode(get_object_vars($shelf), JSON_PRETTY_PRINT));
 			
 			break;
 		case 'createShelf':
@@ -109,14 +109,14 @@ if(isset($_POST['token']) && isset($_POST['type']))
 			{
 				// check if item exists in table
 				
-				if(isset($_POST['description'])) {}
-					// update description
+				if(isset($_POST['description']))
+					updateItem($pdo);
 				
 				if(isset($_POST['minimum'])) {}
-					// update minimum
+					updateItem($pdo);
 				
 				if(isset($_POST['maximum'])) {}
-					// update maximum
+					updateItem($pdo);
 			}
 			break;
 		case 'addItem':
@@ -126,11 +126,11 @@ if(isset($_POST['token']) && isset($_POST['type']))
 		case 'updateShelf':
 			if(isset($_POST['id']))
 			{
-				if(isset($_POST['label'])) {}
-					// update label
+				if(isset($_POST['label']))
+					updateShelf($pdo);
 				
-				if(isset($_POST['barcode'])) {}
-					// update barcode
+				if(isset($_POST['barcode']))
+					updateShelf($pdo);
 			}
 			break;
 		case 'removeItem':
@@ -179,22 +179,30 @@ function createItem($description, $minimum, $maximum, $pdo)
 
 function createShelf($label, $pdo)
 {
-	$barcode = 0;
-	$row_count = 0;
+	// Check if label already exists in shelf
+	$stmt = $pdo->prepare('SELECT * FROM shelves WHERE label = ?');
+	$stmt->execute([$label]);
 	
-	// pseudo-randomly generate an unused barcode
-	do
+	if(!$stmt->rowCount())
 	{
-		$barcode = rand(pow(10, 7), pow(10, 8)-1);
-		
-		$stmt = $pdo->prepare('SELECT * FROM shelves WHERE barcode = ?');
-		$stmt->execute([$barcode]);
-		$row_count = $stmt->rowCount();
-	}
-	while ($row_count);
 	
-	$stmt = $pdo->prepare('INSERT INTO shelves (label, barcode) VALUES (?, ?)');
-	$stmt->execute([$label, $barcode]);
+		$barcode = 0;
+		$row_count = 0;
+		
+		// pseudo-randomly generate an unused barcode
+		do
+		{
+			$barcode = rand(pow(10, 7), pow(10, 8)-1);
+			
+			$stmt = $pdo->prepare('SELECT * FROM shelves WHERE barcode = ?');
+			$stmt->execute([$barcode]);
+			$row_count = $stmt->rowCount();
+		}
+		while ($row_count);
+		
+		$stmt = $pdo->prepare('INSERT INTO shelves (label, barcode) VALUES (?, ?)');
+		$stmt->execute([$label, $barcode]);
+	}
 }
 
 function createAlias($barcode, $item_id, $pdo)
