@@ -2,7 +2,10 @@
 
 session_start();
 
-$loggedin = $_SESSION["login"] === true;
+if(isset($_SESSION["login"])
+	$loggedin = $_SESSION["login"] === true;
+else
+	$loggedin = false;
 
 if($loggedin)
 {
