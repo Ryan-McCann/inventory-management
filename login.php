@@ -36,7 +36,7 @@ if(isset($_POST['email']) && isset($_POST['password']))
 	if($stmt->rowCount())
 	{
 		$user_result = $stmt->fetch();
-		if(password_verify($_POST['password'], $user_result['hash']))
+		if(password_verify($_POST['password'], $user_result['password']))
 		{
 			if($user_result['enabled'])
 			{
