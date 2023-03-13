@@ -46,6 +46,8 @@ if(isset($_POST['email']) && isset($_POST['password']))
 		// return an error that user already exists to registration page
 		$_SESSION['register-error'] = 'user';
 	}
+	
+	header('Location: index.php');
 }
 
 ?>
