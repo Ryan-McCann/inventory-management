@@ -31,11 +31,7 @@ catch (\PDOException $e)
 	throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-/* Check if token is set and check if a request was made
-   Will need to authenticate token against list of allowed users
-   Using Google login 
-*/
-if(isset($_POST['token']) && isset($_POST['type']))
+if(isset($_POST['type']))
 {
 	switch($_POST['type'])
 	{
