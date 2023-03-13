@@ -1,11 +1,11 @@
 <?php
-require("includes/Item.php");
-require("includes/Shelf.php");
-require("includes/util.php");
+require("/includes/Item.php");
+require("/includes/Shelf.php");
+require("/includes/util.php");
 
 header('Content-Type: application/json');
 
-$config = loadConfig('config.ini');
+$config = loadConfig('/config.ini');
 
 // PDO parameters
 $host = $config['host'];

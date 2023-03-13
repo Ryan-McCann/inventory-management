@@ -1,8 +1,8 @@
 <?php
 
-require("includes/util.php");
+require("/includes/util.php");
 
-$config = loadConfig('config.ini');
+$config = loadConfig('/config.ini');
 
 // PDO parameters
 $host = $config['host'];
@@ -48,6 +48,7 @@ if(isset($_POST['email']) && isset($_POST['password']))
 				$stmt->execute([$token, $user_result['id']]);
 				
 				setcookie('token', $token);
+				header('Location: includes/inventory-management.php');
 			}
 			else
 			{
