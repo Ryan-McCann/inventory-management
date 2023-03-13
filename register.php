@@ -31,7 +31,7 @@ catch (\PDOException $e)
 if(isset($_POST['email']) && isset($_POST['password']))
 {
 	$stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
-	$stmt->execute($_POST['email']);
+	$stmt->execute([$_POST['email']]);
 	
 	if(!$stmt->rowCount())
 	{
