@@ -75,11 +75,13 @@ else
 		{
 			echo("<script>invalidUser();</script>");
 		}
+		unset($_SESSION['login-error']);
 	}
 	
 	if(isset($_SESSION['register-error']) && $_SESSION['register-error'] == 'user')
 	{
 		echo("<script>userTaken();</script>");
+		unset($_SESSION['register-error']);
 	}
 }
 
