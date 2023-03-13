@@ -39,7 +39,7 @@ if(isset($_POST["token"]))
 	else
 		$loggedin = false;
 }
-else if(isset($_COOKIE["token"])
+else if(isset($_COOKIE["token"]))
 {
 	$stmt = $pdo->prepare('SELECT * FROM tokens WHERE token = ?');
 	$stmt->execute([$_COOKIE["token"]]);
