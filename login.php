@@ -1,5 +1,9 @@
 <?php
 
+require("includes/util.php");
+
+$config = loadConfig('config.ini');
+
 // PDO parameters
 $host = $config['host'];
 $db = $config['db'];
