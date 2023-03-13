@@ -35,7 +35,7 @@ if(isset($_POST['email']) && isset($_POST['password']))
 	
 	if(!$stmt->rowCount())
 	{
-		$hash = password_hash($_POST['password']);
+		$hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
 		$stmt = $pdo->prepare("INSERT INTO users (email, password, enabled) VALUES (?, ?, FALSE)");
 		$stmt->execute([$_POST['email'], $hash]);
 	}
