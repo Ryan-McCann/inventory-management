@@ -48,7 +48,7 @@ if(isset($_POST['email']) && isset($_POST['password']))
 				$stmt->execute([$token, $user_result['id']]);
 				
 				setcookie('token', $token);
-				header('Location: includes/inventory-management.php');
+				header('Location: index.php');
 			}
 			else
 			{
