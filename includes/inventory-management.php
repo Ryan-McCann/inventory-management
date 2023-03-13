@@ -2,7 +2,7 @@
 
 require("util.php");
 
-$config = loadConfig('../config.ini');
+$config = loadConfig('config.ini');
 
 // PDO parameters
 $host = $config['host'];
