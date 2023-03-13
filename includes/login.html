@@ -56,13 +56,13 @@
 	<p>
 		<label>Email:</label><br>
 		<input type="text" name="email" required>
-		<label id="invalid-user" id="invalid-user">Error: email not recognized.</label>
-		<label id="user-disabled">Error: user hasn't been enabled.</label>
+		<label id="invalid-user" style="display:none">Error: email not recognized.</label>
+		<label id="user-disabled" style="display:none">Error: user hasn't been enabled.</label>
 	</p>
 	<p>
 		<label>Password:</label><br>
 		<input type="password" name="password" required>
-		<label id="invalid-password" >Error: password incorrect.</label>
+		<label id="invalid-password" style="display:none">Error: password incorrect.</label>
 	</p>
 	<p>
 		<button>Login</button> <a href="javascript:toggleLogin()">Register</a>
