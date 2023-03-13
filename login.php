@@ -47,11 +47,7 @@ if(isset($_POST['email']) && isset($_POST['password']))
 				$stmt = $pdo->prepare('INSERT INTO tokens (token, user_id) VALUES (?, ?)');
 				$stmt->execute([$token, $user_result['id']]);
 				
-				echo($token);
-				echo($user_result['id']);
-				
 				setcookie('token', $token);
-				echo($token);
 			}
 			else
 			{
