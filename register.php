@@ -2,6 +2,8 @@
 
 require("includes/util.php");
 
+session_start();
+
 $config = loadConfig('config.ini');
 
 // PDO parameters
@@ -42,6 +44,7 @@ if(isset($_POST['email']) && isset($_POST['password']))
 	else
 	{
 		// return an error that user already exists to registration page
+		$_SESSION['register-error'] = 'user';
 	}
 }
 

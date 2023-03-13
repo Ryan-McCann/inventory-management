@@ -2,6 +2,8 @@
 
 require("util.php");
 
+session_start();
+
 $config = loadConfig('config.ini');
 
 // PDO parameters
@@ -27,6 +29,27 @@ try
 catch (\PDOException $e)
 {
 	throw new \PDOException($e->getMessage(), (int)$e->getCode());
+}
+
+if(isset($_SESSION['login-error']))
+{
+	if($_SESSION['login-error'] == 'disabled')
+	{
+		echo("<script>userDisabled();</script>");
+	}
+	else if($_SESSION['login-error'] == 'password')
+	{
+		echo("<script>invalidPassword();</script>");
+	}
+	else if($_SESSION['login-error'] == 'user')
+	{
+		echo("<script>invalidUser();</script>");
+	}
+}
+
+if(isset($_SESSION['register-error']) && $_SESSION['register-error'] == 'user')
+{
+	echo("<script>userTaken();</script>");
 }
 
 if(isset($_POST["token"]))

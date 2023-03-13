@@ -2,6 +2,8 @@
 
 require("includes/util.php");
 
+session_start();
+
 $config = loadConfig('config.ini');
 
 // PDO parameters
@@ -48,22 +50,26 @@ if(isset($_POST['email']) && isset($_POST['password']))
 				$stmt->execute([$token, $user_result['id']]);
 				
 				setcookie('token', $token);
-				header('Location: index.php');
 			}
 			else
 			{
 				// return error that user is not enabled
+				$_SESSION['login-error'] = 'disabled';
 			}
 		}
 		else
 		{
 			// return error incorrect password
+			$_SESSION['login-error'] = 'password';
 		}
 	}
 	else
 	{
 		// return an error that user does not exist to login page
+		$_SESSION['login-error'] = 'user';
 	}
+	
+	header('Location: index.php');
 }
 
 ?> 

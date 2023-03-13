@@ -28,6 +28,26 @@
 			}
 		}
 	}
+	
+	function invalidUser() {
+		let label = document.getElementById("invalid-user");
+		label.style.display = "block";
+	}
+	
+	function invalidPassword() {
+		let label = document.getElementById("invalid-password");
+		label.style.display = "block";
+	}
+	
+	function userDisabled() {
+		let label = document.getElementById("user-disabled");
+		label.style.display = "block";
+	}
+	
+	function userTaken() {
+		let label = document.getElementById("user-taken");
+		label.style.display = "block";
+	}
 </script>
 
 <body>
@@ -36,10 +56,13 @@
 	<p>
 		<label>Email:</label><br>
 		<input type="text" name="email" required>
+		<label id="invalid-user" id="invalid-user">Error: email not recognized.</label>
+		<label id="user-disabled">Error: user hasn't been enabled.</label>
 	</p>
 	<p>
 		<label>Password:</label><br>
 		<input type="password" name="password" required>
+		<label id="invalid-password" >Error: password incorrect.</label>
 	</p>
 	<p>
 		<button>Login</button> <a href="javascript:toggleLogin()">Register</a>
@@ -50,7 +73,7 @@
 	<p><b>Register:</b></p>
 	<p>
 		<label>Email:</label><br>
-		<input type="text" name="email" required>
+		<input type="text" name="email" required> <label id="user-taken" style="display:none">Error: Email already taken.</label>
 	</p>
 	<p>
 		<label>Password:</label><br>
