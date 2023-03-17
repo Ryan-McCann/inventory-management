@@ -33,21 +33,45 @@ catch (\PDOException $e)
 
 if(isset($_POST["token"]))
 {
+	$stmt = $pdo->prepare('DELETE FROM tokens WHERE expires < now()');
+	$stmt->execute([]);
 	$stmt = $pdo->prepare('SELECT * FROM tokens WHERE token = ?');
 	$stmt->execute([$_POST["token"]]);
 	
 	if($stmt->rowCount())
+	{
+		$token_row = $stmt->fetch();
 		$loggedin = true;
+		$stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+		$stmt->execute([$token_row['user_id']]);
+		$user_row = $stmt->fetch();
+		
+		$user->email = $user_row['email'];
+		$user->enabled = $user_row['enabled'];
+		$user->admin = $user_row['admin'];
+	}
 	else
 		$loggedin = false;
 }
 else if(isset($_COOKIE["token"]))
 {
+	$stmt = $pdo->prepare('DELETE FROM tokens WHERE expires < now()');
+	$stmt->execute([]);
 	$stmt = $pdo->prepare('SELECT * FROM tokens WHERE token = ?');
 	$stmt->execute([$_COOKIE["token"]]);
 	
 	if($stmt->rowCount())
+	{
+		$token_row = $stmt->fetch();
 		$loggedin = true;
+		$stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+		$stmt->execute([$token_row['user_id']]);
+		$user_row = $stmt->fetch();
+		
+		$user->email = $user_row['email'];
+		$user->enabled = $user_row['enabled'];
+		$user->admin = $user_row['admin'];
+	}
 	else
 		$loggedin = false;
 }

@@ -30,7 +30,32 @@ catch (\PDOException $e)
 	throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-if(isset($_POST['email']) && isset($_POST['password']))
+// Request to check that token is still valid
+if(isset($_POST['token']))
+{
+	$stmt = $pdo->prepare('SELECT * FROM tokens WHERE token = ?');
+	$stmt->execute([$_POST['token']]);
+	
+	if($stmt->rowCount())
+	{
+		$token_row = $stmt->fetch();
+		
+		$stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+		$stmt->execute([$token_row['user_id']]);
+		
+		if($stmt->rowCount())
+		{
+			$user_row = $stmt->fetch();
+			echo($user_row['email']);
+		}
+		else
+			echo("invalid-token");
+	}
+	else
+		echo("invalid-token");
+}
+
+else if(isset($_POST['email']) && isset($_POST['password']))
 {
 	$stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
 	$stmt->execute([$_POST['email']]);
@@ -45,31 +70,47 @@ if(isset($_POST['email']) && isset($_POST['password']))
 				// generate a token and pass as cookie
 				$token = base64_encode(bin2hex(random_bytes(8)));
 				
-				// store token in tokens table
-				$stmt = $pdo->prepare('INSERT INTO tokens (token, user_id) VALUES (?, ?)');
+				// store token in tokens table with 30 day expiration date
+				$stmt = $pdo->prepare('INSERT INTO tokens (token, user_id, expires) VALUES (?, ?, NOW() + INTERVAL 30 DAYS)');
 				$stmt->execute([$token, $user_result['id']]);
 				
-				setcookie('token', $token);
+				// echo token as text
+				if(isset($_POST['result']) && $_POST['result'] == 'text')
+					echo($token);
+				// set cookie with 30 day expiration date
+				else
+					setcookie('token', $token, time()+60*60*24*30);
 			}
 			else
 			{
+				// echo user-disabled as text
+				if(isset($_POST['result']) && $_POST['result'] == 'text')
+					echo("user-disabled");
 				// return error that user is not enabled
-				$_SESSION['login-error'] = 'disabled';
+				else
+					$_SESSION['login-error'] = 'disabled';
 			}
 		}
 		else
 		{
+			if(isset($_POST['result']) && $_POST['result'] == 'text')
+				echo("invalid-password");
 			// return error incorrect password
-			$_SESSION['login-error'] = 'password';
+			else
+				$_SESSION['login-error'] = 'password';
 		}
 	}
 	else
 	{
+		if(isset($_POST['result']) && $_POST['result'] == 'text')
+			echo("invalid-user");
 		// return an error that user does not exist to login page
-		$_SESSION['login-error'] = 'user';
+		else
+			$_SESSION['login-error'] = 'user';
 	}
 	
-	header('Location: index.php');
+	if(!isset($_POST['result']) || $_POST['result'] != 'text')
+		header('Location: index.php');
 }
 
 ?> 

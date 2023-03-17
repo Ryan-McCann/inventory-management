@@ -34,121 +34,122 @@ catch (\PDOException $e)
 
 if(isset($_POST['type']))
 {
-	switch($_POST['type'])
+	if(isset($_POST['token']))
+		$token = $_POST['token'];
+	else if(isset($_COOKIE['token']))
+		$token = $_COOKIE['token'];
+	
+	$stmt = $pdo->prepare('DELETE FROM tokens WHERE expires < now()');
+	$stmt->execute([]);
+	$stmt = $pdo->prepare('SELECT * FROM tokens WHERE token = ?');
+	$stmt->execute([$token]);
+	
+	if($stmt->rowCount())
+		$valid_token = true;
+	else
+		$valid_token = false;
+	
+	if($valid_token)
 	{
-		case 'item':
-			$item = new Item();
-			
-			if(isset($_POST['barcode']))
-			{
-				$item = getItemByBarcode($_POST['barcode'], $pdo);
-			}
-			else if(isset($_POST['id']))
-			{
-				$item = getItemById($_POST['id'], $pdo);
-			}
-			
-			// echo result as json
-			echo(json_encode(get_object_vars($item), JSON_PRETTY_PRINT));
-			
-			break;
-		case 'shelf':
-			$shelf = new Shelf();
-			
-			if(isset($_POST['barcode']))
-			{
-				$shelf = getShelfByBarcode($_POST['barcode']);
-			}
-			else if(isset($_POST['label']))
-			{
-				$shelf = getShelfByLabel($_POST['label']);
-			}
-			else if(isset($_POST['id']))
-			{
-				$shelf = getShelfById($_POST['id']);
-			}
-			
-			// echo result as json
-			echo(json_encode(get_object_vars($shelf), JSON_PRETTY_PRINT));
-			
-			break;
-		case 'createShelf':
-			if(isset($_POST['label']))
-				createShelf($_POST['label'], $pdo);
-			break;
-		case 'createItem':
-			if(isset($_POST['description']) && isset($_POST['barcode']))
-			{
-				$minimum = 0;
-				$maximum = 0;
-				
-				// if minimum is set
-				if(isset($_POST['minimum']))
-					$minimum = $_POST['minimum'];
-				
-				// if maximum is set
-				if(isset($_POST['maximum']))
-					$maximum = $_POST['maximum'];
-				
-				// create an item with description
-				$item_id = createItem($description, $minimum, $maximum, $pdo);
-				
-				// create an alias with barcode and item id
-				createAlias($barcode, $item_id, $pdo);
-			}
-			break;
-		case 'createAlias':
-			if(isset($_POST['id']) && isset($_POST['barcode']))
-				createAlias($_POST['barcode'], $_POST['id'], $pdo);
-			break;
-		case 'updateItem':
-			if(isset($_POST['id']))
-			{
-				// check if item exists in table
-				
-				if(isset($_POST['description']))
-					updateItem($pdo);
-				
-				if(isset($_POST['minimum'])) {}
-					updateItem($pdo);
-				
-				if(isset($_POST['maximum'])) {}
-					updateItem($pdo);
-			}
-			break;
-		case 'addItem':
-			if(isset($_POST['id']) && isset($_POST['quantity']) && isset($_POST['shelfId']))
-				addItem($_POST['id'], $_POST['shelfId'], $_POST['quantity'], $pdo);
-			break;
-		case 'updateShelf':
-			if(isset($_POST['id']))
-			{
-				if(isset($_POST['label']))
-					updateShelf($pdo);
+		switch($_POST['type'])
+		{
+			case 'item':
+				$item = new Item();
 				
 				if(isset($_POST['barcode']))
-					updateShelf($pdo);
-			}
-			break;
-		case 'removeItem':
-			if(isset($_POST['id']) && isset($_POST['quantity']) && isset($_POST['shelfId']))
-				removeItem($_POST['id'], $_POST['shelfId'], $_POST['quantity'], $pdo);
-			break;
-		case 'deleteItem':
-			if(isset($_POST['id']))
-				deleteItem($id, $pdo);
-			break;
-		case 'deleteShelf':
-			if(isset($_POST['id']))
-				deleteShelf($id, $pdo);
-			break;
-		case 'deleteAlias':
-			if(isset($_POST['barcode']))
-				deleteAlias($barcode, $pdo);
-			break;
-		default:
-			echo('Invalid request type.');
-			break;
+				{
+					$item = getItemByBarcode($_POST['barcode'], $pdo);
+				}
+				else if(isset($_POST['id']))
+				{
+					$item = getItemById($_POST['id'], $pdo);
+				}
+				
+				// echo result as json
+				echo(json_encode(get_object_vars($item), JSON_PRETTY_PRINT));
+				
+				break;
+			case 'shelf':
+				$shelf = new Shelf();
+				
+				if(isset($_POST['barcode']))
+				{
+					$shelf = getShelfByBarcode($_POST['barcode']);
+				}
+				else if(isset($_POST['label']))
+				{
+					$shelf = getShelfByLabel($_POST['label']);
+				}
+				else if(isset($_POST['id']))
+				{
+					$shelf = getShelfById($_POST['id']);
+				}
+				
+				// echo result as json
+				echo(json_encode(get_object_vars($shelf), JSON_PRETTY_PRINT));
+				
+				break;
+			case 'createShelf':
+				if(isset($_POST['label']))
+					createShelf($_POST['label'], $pdo);
+				break;
+			case 'createItem':
+				if(isset($_POST['description']) && isset($_POST['barcode']))
+				{
+					$minimum = 0;
+					$maximum = 0;
+					
+					// if minimum is set
+					if(isset($_POST['minimum']))
+						$minimum = $_POST['minimum'];
+					
+					// if maximum is set
+					if(isset($_POST['maximum']))
+						$maximum = $_POST['maximum'];
+					
+					// create an item with description
+					$item_id = createItem($description, $minimum, $maximum, $pdo);
+					
+					// create an alias with barcode and item id
+					createAlias($barcode, $item_id, $pdo);
+				}
+				break;
+			case 'createAlias':
+				if(isset($_POST['id']) && isset($_POST['barcode']))
+					createAlias($_POST['barcode'], $_POST['id'], $pdo);
+				break;
+			case 'updateItem':
+				if(isset($_POST['id']) && isset($_POST['description']) && isset($_POST['minimum']) && isset($_POST['maximum']))
+					updateItem($_POST['id'], $_POST['description'], $_POST['minimum'], $_POST['maximum'], $pdo);
+				break;
+			case 'addItem':
+				if(isset($_POST['id']) && isset($_POST['quantity']) && isset($_POST['shelfId']))
+					addItem($_POST['id'], $_POST['shelfId'], $_POST['quantity'], $pdo);
+				break;
+			case 'updateShelf':
+				if(isset($_POST['id']) && isset($_POST['label']) && isset($_POST['barcode']))
+					updateShelf($_POST['id'], $_POST['label'], $_POST['barcode'], $pdo);
+				break;
+			case 'removeItem':
+				if(isset($_POST['id']) && isset($_POST['quantity']) && isset($_POST['shelfId']))
+					removeItem($_POST['id'], $_POST['shelfId'], $_POST['quantity'], $pdo);
+				break;
+			case 'deleteItem':
+				if(isset($_POST['id']))
+					deleteItem($id, $pdo);
+				break;
+			case 'deleteShelf':
+				if(isset($_POST['id']))
+					deleteShelf($id, $pdo);
+				break;
+			case 'deleteAlias':
+				if(isset($_POST['barcode']))
+					deleteAlias($barcode, $pdo);
+				break;
+			default:
+				echo('Invalid request type.');
+				break;
+		}
 	}
 }
 
@@ -247,7 +248,6 @@ function getItemById($item_id, $pdo)
 			}
 		}
 		
-		
 		$stmt = $pdo->prepare('SELECT * FROM shelves WHERE id = ?');
 		
 		$stmt = $pdo->prepare('SELECT * FROM aliases WHERE item_id = ?');
@@ -332,7 +332,7 @@ function addItem($item_id, $shelf_id, $quantity, $pdo)
 	if($stmt->rowCount())
 	{
 		$quantity += $result['quantity'];
-		$stmt = $pdo->prepare('UPDATE inventory WHERE item_id = ? AND shelf_id = ? SET quantity = ?');
+		$stmt = $pdo->prepare('UPDATE inventory SET quantity = ? WHERE item_id = ? AND shelf_id = ?');
 		$stmt->execute([$item_id, $shelf_id, $quantity]);
 	}
 	// if no row exists, check if item and shelf exist, then add to table
@@ -352,7 +352,7 @@ function addItem($item_id, $shelf_id, $quantity, $pdo)
 			// check if shelf id exists in shelves table
 			if($stmt->rowCount())
 			{
-				$stmt = $pdo->prepare('UPDATE inventory WHERE item_id = ? AND shelf_id = ? SET quantity = ?');
+				$stmt = $pdo->prepare('UPDATE inventory SET quantity = ? WHERE item_id = ? AND shelf_id = ?');
 				$stmt->execute([$item_id, $shelf_id, $quantity]);
 			}
 		}
@@ -373,19 +373,21 @@ function removeItem($item_id, $shelf_id, $quantity, $pdo)
 		if($new_quantity < 0)
 			$new_quantity = 0;
 		
-		$stmt = $pdo->prepare('UPDATE inventory WHERE item_id = ? AND shelf_id = ? SET quantity = ?');
+		$stmt = $pdo->prepare('UPDATE inventory SET quantity = ? WHERE item_id = ? AND shelf_id = ?');
 		$stmt->execute([$item_id, $shelf_id, $new_quantity]);
 	}
 }
 
-function updateItem($pdo)
+function updateItem($id, $description, $minimum, $maximum, $pdo)
 {
-	
+	$stmt = $pdo->prepare('UPDATE items SET description = ?, minimum = ?, maximum = ? WHERE id = ?');
+	$stmt->execute([$description, $minimum, $maximum, $id]);
 }
 
-function updateShelf($pdo)
+function updateShelf($id, $label, $barcode, $pdo)
 {
-	
+	$stmt = $pdo->prepare('UPDATE shelves SET label = ?, barcode = ? WHERE id = ?');
+	$stmt->execute([$label, $barcode, $id]);
 }
 
 function deleteItem($id, $pdo)
