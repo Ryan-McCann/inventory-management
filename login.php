@@ -49,7 +49,7 @@ if(isset($_POST['token']))
 			echo($user_row['email']);
 		}
 		else
-			echo("invalid-token");
+			echo("invalid-token-user");
 	}
 	else
 		echo("invalid-token");
