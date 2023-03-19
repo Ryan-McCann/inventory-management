@@ -1,6 +1,7 @@
 <?php
 
 require("util.php");
+require("User.php");
 
 session_start();
 
@@ -46,6 +47,8 @@ if(isset($_POST["token"]))
 		$stmt->execute([$token_row['user_id']]);
 		$user_row = $stmt->fetch();
 		
+		$user = new User();
+		
 		$user->email = $user_row['email'];
 		$user->enabled = $user_row['enabled'];
 		$user->admin = $user_row['admin'];
@@ -67,6 +70,8 @@ else if(isset($_COOKIE["token"]))
 		$stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
 		$stmt->execute([$token_row['user_id']]);
 		$user_row = $stmt->fetch();
+		
+		$user = new User();
 		
 		$user->email = $user_row['email'];
 		$user->enabled = $user_row['enabled'];
