@@ -71,7 +71,7 @@ else if(isset($_POST['email']) && isset($_POST['password']))
 				$token = base64_encode(bin2hex(random_bytes(8)));
 				
 				// store token in tokens table with 30 day expiration date
-				$stmt = $pdo->prepare('INSERT INTO tokens (token, user_id, expires) VALUES (?, ?, NOW() + INTERVAL 30 DAYS)');
+				$stmt = $pdo->prepare('INSERT INTO tokens (token, user_id, expires) VALUES (?, ?, NOW() + INTERVAL 30 DAY)');
 				$stmt->execute([$token, $user_result['id']]);
 				
 				// echo token as text
