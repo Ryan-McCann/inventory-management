@@ -74,15 +74,15 @@ if(isset($_POST['type']))
 				
 				if(isset($_POST['barcode']))
 				{
-					$shelf = getShelfByBarcode($_POST['barcode']);
+					$shelf = getShelfByBarcode($_POST['barcode'], $pdo);
 				}
 				else if(isset($_POST['label']))
 				{
-					$shelf = getShelfByLabel($_POST['label']);
+					$shelf = getShelfByLabel($_POST['label'], $pdo);
 				}
 				else if(isset($_POST['id']))
 				{
-					$shelf = getShelfById($_POST['id']);
+					$shelf = getShelfById($_POST['id'], $pdo);
 				}
 				
 				// echo result as json
