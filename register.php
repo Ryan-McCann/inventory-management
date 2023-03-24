@@ -40,11 +40,20 @@ if(isset($_POST['email']) && isset($_POST['password']))
 		$hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
 		$stmt = $pdo->prepare("INSERT INTO users (email, password, enabled) VALUES (?, ?, FALSE)");
 		$stmt->execute([$_POST['email'], $hash]);
+		
+		if(isset($_POST['result']) && $_POST['result'] == 'text')
+		{
+			echo("success");
+		}
 	}
 	else
 	{
 		// return an error that user already exists to registration page
 		$_SESSION['register-error'] = 'user';
+		if(isset($_POST['result']) && $_POST['result'] == 'text')
+		{
+			echo("invalid-user");
+		}
 	}
 	
 	header('Location: index.php');
