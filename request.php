@@ -89,6 +89,15 @@ if(isset($_POST['type']))
 				echo(json_encode(get_object_vars($shelf), JSON_PRETTY_PRINT));
 				
 				break;
+			case 'shelfItems':
+				$items = [];
+				if(isset($_POST['id']))
+				{
+					$items = getItemsByShelf($_POST['id'], $pdo);
+					
+					echo(json_encode(get_object_vars($items), JSON_PRETTY_PRINT));
+				}
+				break;
 			case 'createShelf':
 				if(isset($_POST['label']))
 					createShelf($_POST['label'], $pdo);
@@ -248,8 +257,6 @@ function getItemById($item_id, $pdo)
 			}
 		}
 		
-		$stmt = $pdo->prepare('SELECT * FROM shelves WHERE id = ?');
-		
 		$stmt = $pdo->prepare('SELECT * FROM aliases WHERE item_id = ?');
 		$stmt->execute([$item_id]);
 		
@@ -264,6 +271,26 @@ function getItemById($item_id, $pdo)
 		}
 	}
 	return $item;
+}
+
+function getItemsByShelf($shelf_id, $pdo)
+{
+	$items = [];
+	$stmt = $pdo->prepare('SELECT * FROM inventory WHERE shelf_id = ?');
+	$stmt->execute([$shelf_id]);
+	
+	$item_results = $stmt->fetchAll();
+	
+	if($stmt->rowCount())
+	{
+		foreach($item_results as $item_result)
+		{
+			$item = getItemById($item_result['item_id'], $pdo);
+			array_push($items, $item);
+		}
+	}
+	
+	return $items;
 }
 
 function getShelfById($shelf_id, $pdo)
