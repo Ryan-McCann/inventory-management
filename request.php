@@ -111,19 +111,26 @@ if(isset($_POST['type']))
 					$description = $_POST['description'];
 					$barcode = $_POST['barcode'];
 					
-					// if minimum is set
-					if(isset($_POST['minimum']))
-						$minimum = $_POST['minimum'];
+					$stmt = $pdo->prepare("SELECT * FROM aliases WHERE UPC = ?");
+					$stmt->execute([$barcode]);
 					
-					// if maximum is set
-					if(isset($_POST['maximum']))
-						$maximum = $_POST['maximum'];
-					
-					// create an item with description
-					$item_id = createItem($description, $minimum, $maximum, $pdo);
-					
-					// create an alias with barcode and item id
-					createAlias($barcode, $item_id, $pdo);
+					// If barcode doesn't already exist in database
+					if(!$stmt->rowCount())
+					{
+						// if minimum is set
+						if(isset($_POST['minimum']))
+							$minimum = $_POST['minimum'];
+						
+						// if maximum is set
+						if(isset($_POST['maximum']))
+							$maximum = $_POST['maximum'];
+						
+						// create an item with description
+						$item_id = createItem($description, $minimum, $maximum, $pdo);
+						
+						// create an alias with barcode and item id
+						createAlias($barcode, $item_id, $pdo);
+					}
 				}
 				break;
 			case 'createAlias':
