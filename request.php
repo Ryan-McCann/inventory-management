@@ -343,7 +343,7 @@ function getShelfByLabel($label, $pdo)
 	if($stmt->rowCount())
 	{
 		$shelf->id = $shelf_result['id'];
-		$shelf->label = label;
+		$shelf->label = $label;
 		$shelf->barcode = $shelf_result['barcode'];
 	}
 }
