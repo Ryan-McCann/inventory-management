@@ -95,7 +95,7 @@ if(isset($_POST['type']))
 				{
 					$items = getItemsByShelf($_POST['id'], $pdo);
 					
-					echo(json_encode(get_object_vars($items), JSON_PRETTY_PRINT));
+					echo(json_encode($items), JSON_PRETTY_PRINT);
 				}
 				break;
 			case 'createShelf':
