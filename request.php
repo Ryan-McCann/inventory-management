@@ -108,6 +108,9 @@ if(isset($_POST['type']))
 					$minimum = 0;
 					$maximum = 0;
 					
+					$description = $_POST['description'];
+					$barcode = $_POST['barcode'];
+					
 					// if minimum is set
 					if(isset($_POST['minimum']))
 						$minimum = $_POST['minimum'];
