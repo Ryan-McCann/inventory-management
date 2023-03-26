@@ -335,7 +335,7 @@ function getShelfByLabel($label, $pdo)
 {
 	$shelf = new Shelf();
 	
-	$stmt = $pdo->preapare('SELECT * FROM shelves WHERE label = ?');
+	$stmt = $pdo->prepare('SELECT * FROM shelves WHERE label = ?');
 	$stmt->execute([$label]);
 	
 	$shelf_result = $stmt->fetch();
