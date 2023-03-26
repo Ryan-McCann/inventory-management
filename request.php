@@ -209,7 +209,7 @@ function createShelf($label, $pdo)
 
 function createAlias($barcode, $item_id, $pdo)
 {
-	$stmt = $pdo->prepare('INSERT INTO aliases (barcode, item_id) VALUES (?, ?)');
+	$stmt = $pdo->prepare('INSERT INTO aliases (UPC, item_id) VALUES (?, ?)');
 	$stmt->execute([$barcode, $item_id]);
 }
 
