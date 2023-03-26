@@ -286,6 +286,7 @@ function getItemsByShelf($shelf_id, $pdo)
 		foreach($item_results as $item_result)
 		{
 			$item = getItemById($item_result['item_id'], $pdo);
+			$item->quantity = $item_result['quantity'];
 			array_push($items, $item);
 		}
 	}
