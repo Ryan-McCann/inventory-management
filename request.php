@@ -346,6 +346,8 @@ function getShelfByLabel($label, $pdo)
 		$shelf->label = $label;
 		$shelf->barcode = $shelf_result['barcode'];
 	}
+	
+	return $shelf;
 }
 
 // This function is used to add the specified quantity of an item to a shelf
