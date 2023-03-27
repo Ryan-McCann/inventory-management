@@ -311,7 +311,7 @@ function getItemsPartial($pdo)
 		array_push($items, $item);
 	}
 	
-	return items;
+	return $items;
 }
 
 function getItems($pdo)
@@ -357,7 +357,7 @@ function getItems($pdo)
 		array_push($items, $item);
 	}
 	
-	return items;
+	return $items;
 }
 
 function getItemsByShelf($shelf_id, $pdo)
