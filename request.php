@@ -493,7 +493,7 @@ function addItem($item_id, $shelf_id, $quantity, $pdo)
 			// check if shelf id exists in shelves table
 			if($stmt->rowCount())
 			{
-				$stmt = $pdo->prepare('UPDATE inventory SET quantity = ? WHERE item_id = ? AND shelf_id = ?');
+				$stmt = $pdo->prepare('INSERT INTO inventory(item_id, shelf_id, quantity) VALUES (?, ?, ?)');
 				$stmt->execute([$item_id, $shelf_id, $quantity]);
 			}
 		}
