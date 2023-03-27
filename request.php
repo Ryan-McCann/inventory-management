@@ -97,7 +97,7 @@ if(isset($_POST['type']))
 			case 'shelves':
 				$shelves = getShelves($pdo);
 				
-				echo(json_encode($items, JSON_PRETTY_PRINT));
+				echo(json_encode($shelves, JSON_PRETTY_PRINT));
 				break;
 			case 'shelfItems':
 				$items = [];
@@ -298,6 +298,7 @@ function getItemsPartial($pdo)
 	$items = [];
 	
 	$stmt = $pdo->prepare("SELECT * FROM items");
+	$stmt->execute();
 	$item_rows = $stmt->fetchAll();
 	
 	foreach($item_rows as $row)
@@ -319,6 +320,7 @@ function getItems($pdo)
 	$items = [];
 	
 	$stmt = $pdo->prepare('SELECT * FROM items');
+	$stmt->execute();
 	$item_rows = $stmt->fetchAll();
 	
 	foreach($item_rows as $row)
