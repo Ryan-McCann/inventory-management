@@ -69,6 +69,11 @@ if(isset($_POST['type']))
 				echo(json_encode(get_object_vars($item), JSON_PRETTY_PRINT));
 				
 				break;
+			case 'items':
+				$items = getItemsPartial($pdo);
+				
+				echo(json_encode($items, JSON_PRETTY_PRINT));
+				break;
 			case 'shelf':
 				$shelf = new Shelf();
 				
@@ -88,6 +93,11 @@ if(isset($_POST['type']))
 				// echo result as json
 				echo(json_encode(get_object_vars($shelf), JSON_PRETTY_PRINT));
 				
+				break;
+			case 'shelves':
+				$shelves = getShelves($pdo);
+				
+				echo(json_encode($items, JSON_PRETTY_PRINT));
 				break;
 			case 'shelfItems':
 				$items = [];
@@ -283,6 +293,73 @@ function getItemById($item_id, $pdo)
 	return $item;
 }
 
+function getItemsPartial($pdo)
+{
+	$items = [];
+	
+	$stmt = $pdo->prepare("SELECT * FROM items");
+	$item_rows = $stmt->fetchAll();
+	
+	foreach($item_rows as $row)
+	{
+		$item = new Item();
+		$item->id = $row['id'];
+		$item->description = $row['description'];
+		$item->minimum = $row['minimum'];
+		$item->maximum = $row['maximum'];
+		
+		array_push($items, $item);
+	}
+	
+	return items;
+}
+
+function getItems($pdo)
+{
+	$items = [];
+	
+	$stmt = $pdo->prepare('SELECT * FROM items');
+	$item_rows = $stmt->fetchAll();
+	
+	foreach($item_rows as $row)
+	{
+		$item = new Item();
+		$item->id = $row['id'];
+		$item->description = $row['description'];
+		$item->minimum = $row['minimum'];
+		$item->maximum = $row['maximum'];
+		
+		$stmt = $pdo->prepare('SELECT * FROM aliases WHERE item_id = ?');
+		$stmt->execute([$item->id]);
+		
+		$barcode_rows = $stmt->fetchAll();
+		
+		foreach($barcode_rows as $barcode_row)
+		{
+			array_push($items->barcodes, $barcode_row['UPC']);
+		}
+		
+		$stmt = $pdo->prepare('SELECT * FROM inventory WHERE item_id = ?');
+		$stmt->execute([$item_id]);
+		$quantities = $stmt->fetchAll();
+		
+		$item->quantity = 0;
+		if($stmt->rowCount())
+		{
+			// iterate over rows and get the total quantity of item in inventory
+			foreach($quantities as $quant_row)
+			{
+				$item->quantity += $quant_row['quantity'];
+				array_push($item->shelves, $quant_row['shelf_id']);
+			}
+		}
+		
+		array_push($items, $item);
+	}
+	
+	return items;
+}
+
 function getItemsByShelf($shelf_id, $pdo)
 {
 	$items = [];
@@ -340,6 +417,28 @@ function getShelfByBarcode($barcode, $pdo)
 	}
 	
 	return $shelf;
+}
+
+function getShelves($pdo)
+{
+	$shelves = [];
+	
+	$stmt = $pdo->prepare('SELECT * FROM shelves');
+	$stmt->execute();
+	
+	$shelf_results = $stmt->fetchAll();
+	
+	foreach($shelf_results as $row)
+	{
+		$shelf = new Shelf();
+		$shelf->id = $row['id'];
+		$shelf->label = $row['label'];
+		$shelf->barcode = $row['barcode'];
+		
+		array_push($shelves, $shelf);
+	}
+	
+	return $shelves;
 }
 
 function getShelfByLabel($label, $pdo)
