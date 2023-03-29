@@ -511,11 +511,16 @@ function removeItem($item_id, $shelf_id, $quantity, $pdo)
 	if($stmt->rowCount())
 	{
 		$new_quantity = $result['quantity'] - $quantity;
-		if($new_quantity < 0)
-			$new_quantity = 0;
-		
-		$stmt = $pdo->prepare('UPDATE inventory SET quantity = ? WHERE item_id = ? AND shelf_id = ?');
-		$stmt->execute([$item_id, $shelf_id, $new_quantity]);
+		if($new_quantity <= 0)
+		{
+			$stmt = $pdo->prepare('DELETE FROM inventory WHERE item_id = ? AND shelf_id = ?');
+			$stmt->execute([$item_id, $shelf_id-]);
+		}
+		else
+		{
+			$stmt = $pdo->prepare('UPDATE inventory SET quantity = ? WHERE item_id = ? AND shelf_id = ?');
+			$stmt->execute([$item_id, $shelf_id, $new_quantity]);
+		}
 	}
 }
 
