@@ -474,7 +474,7 @@ function addItem($item_id, $shelf_id, $quantity, $pdo)
 	{
 		$quantity += $result['quantity'];
 		$stmt = $pdo->prepare('UPDATE inventory SET quantity = ? WHERE item_id = ? AND shelf_id = ?');
-		$stmt->execute([$item_id, $shelf_id, $quantity]);
+		$stmt->execute([$quantity, $item_id, $shelf_id]);
 	}
 	// if no row exists, check if item and shelf exist, then add to table
 	else
