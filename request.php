@@ -55,9 +55,9 @@ if(isset($_POST['type']))
 				{
 					$item = getItemByBarcode($_POST['barcode'], $pdo);
 				}
-				else if(isset($_POST['id']))
+				else if(isset($_POST['itemId']))
 				{
-					$item = getItemById($_POST['id'], $pdo);
+					$item = getItemById($_POST['itemId'], $pdo);
 				}
 				
 				// echo result as json
@@ -80,9 +80,9 @@ if(isset($_POST['type']))
 				{
 					$shelf = getShelfByLabel($_POST['label'], $pdo);
 				}
-				else if(isset($_POST['id']))
+				else if(isset($_POST['shelfId']))
 				{
-					$shelf = getShelfById($_POST['id'], $pdo);
+					$shelf = getShelfById($_POST['shelfId'], $pdo);
 				}
 				
 				// echo result as json
@@ -96,11 +96,17 @@ if(isset($_POST['type']))
 				break;
 			case 'shelfItems':
 				$items = [];
-				if(isset($_POST['id']))
+				if(isset($_POST['shelfId']))
 				{
-					$items = getItemsByShelf($_POST['id'], $pdo);
+					$items = getItemsByShelf($_POST['shelfId'], $pdo);
 					
 					echo(json_encode($items, JSON_PRETTY_PRINT));
+				}
+				break;
+			case 'shelfItemQuantity':
+				if(isset($_POST['itemId']) && isset($_POST['shelfId']))
+				{
+					$quantity = getShelfItemQuantity($_POST['itemId'], $_POST['shelfId'], $pdo);
 				}
 				break;
 			case 'createShelf':
@@ -139,32 +145,32 @@ if(isset($_POST['type']))
 				}
 				break;
 			case 'createAlias':
-				if(isset($_POST['id']) && isset($_POST['barcode']))
-					createAlias($_POST['barcode'], $_POST['id'], $pdo);
+				if(isset($_POST['itemId']) && isset($_POST['barcode']))
+					createAlias($_POST['barcode'], $_POST['itemId'], $pdo);
 				break;
 			case 'updateItem':
-				if(isset($_POST['id']) && isset($_POST['description']) && isset($_POST['minimum']) && isset($_POST['maximum']))
-					updateItem($_POST['id'], $_POST['description'], $_POST['minimum'], $_POST['maximum'], $pdo);
+				if(isset($_POST['itemId']) && isset($_POST['description']) && isset($_POST['minimum']) && isset($_POST['maximum']))
+					updateItem($_POST['itemId'], $_POST['description'], $_POST['minimum'], $_POST['maximum'], $pdo);
 				break;
 			case 'addItem':
-				if(isset($_POST['id']) && isset($_POST['quantity']) && isset($_POST['shelfId']))
-					addItem($_POST['id'], $_POST['shelfId'], $_POST['quantity'], $pdo);
+				if(isset($_POST['itemId']) && isset($_POST['quantity']) && isset($_POST['shelfId']))
+					addItem($_POST['itemId'], $_POST['shelfId'], $_POST['quantity'], $pdo);
 				break;
 			case 'updateShelf':
-				if(isset($_POST['id']) && isset($_POST['label']) && isset($_POST['barcode']))
-					updateShelf($_POST['id'], $_POST['label'], $_POST['barcode'], $pdo);
+				if(isset($_POST['shelfId']) && isset($_POST['label']) && isset($_POST['barcode']))
+					updateShelf($_POST['shelfId'], $_POST['label'], $_POST['barcode'], $pdo);
 				break;
 			case 'removeItem':
-				if(isset($_POST['id']) && isset($_POST['quantity']) && isset($_POST['shelfId']))
-					removeItem($_POST['id'], $_POST['shelfId'], $_POST['quantity'], $pdo);
+				if(isset($_POST['itemId']) && isset($_POST['quantity']) && isset($_POST['shelfId']))
+					removeItem($_POST['itemId'], $_POST['shelfId'], $_POST['quantity'], $pdo);
 				break;
 			case 'deleteItem':
-				if(isset($_POST['id']))
-					deleteItem($_POST['id'], $pdo);
+				if(isset($_POST['itemId']))
+					deleteItem($_POST['itemId'], $pdo);
 				break;
 			case 'deleteShelf':
-				if(isset($_POST['id']))
-					deleteShelf($_POST['id'], $pdo);
+				if(isset($_POST['shelfId']))
+					deleteShelf($_POST['shelfId'], $pdo);
 				break;
 			case 'deleteAlias':
 				if(isset($_POST['barcode']))
@@ -455,6 +461,23 @@ function getShelfByLabel($label, $pdo)
 	}
 	
 	return $shelf;
+}
+
+function getShelfItemQuantity($item_id, $shelf_id, $pdo)
+{
+	$quantity = 0;
+	
+	$stmt = $pdo->prepare('SELECT * FROM inventory WHERE item_id = ? AND shelf_id = ?');
+	$stmt->execute([$item_id, $shelf_id]);
+	
+	$inventory_result = $stmt->fetch();
+	
+	if($stmt->rowCount())
+	{
+		$quantity = $inventory_result['quantity'];
+	}
+	
+	return $quantity;
 }
 
 // This function is used to add the specified quantity of an item to a shelf
