@@ -165,15 +165,15 @@ if(isset($_POST['type']))
 				break;
 			case 'deleteItem':
 				if(isset($_POST['id']))
-					deleteItem($id, $pdo);
+					deleteItem($_POST['id'], $pdo);
 				break;
 			case 'deleteShelf':
 				if(isset($_POST['id']))
-					deleteShelf($id, $pdo);
+					deleteShelf($_POST['id'], $pdo);
 				break;
 			case 'deleteAlias':
 				if(isset($_POST['barcode']))
-					deleteAlias($barcode, $pdo);
+					deleteAlias($_POST['barcode'], $pdo);
 				break;
 			default:
 				echo('Invalid request type.');
