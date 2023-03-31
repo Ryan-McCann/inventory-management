@@ -551,7 +551,7 @@ function deleteShelf($id, $pdo)
 
 function deleteAlias($barcode, $pdo)
 {
-	$stmt = $pdo->prepare('DELETE FROM aliases WHERE barcode = ?');
+	$stmt = $pdo->prepare('DELETE FROM aliases WHERE UPC = ?');
 	$stmt->execute([$barcode]);
 }
 
