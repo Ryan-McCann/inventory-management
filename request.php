@@ -105,9 +105,7 @@ if(isset($_POST['type']))
 				break;
 			case 'shelfItemQuantity':
 				if(isset($_POST['itemId']) && isset($_POST['shelfId']))
-				{
-					$quantity = getShelfItemQuantity($_POST['itemId'], $_POST['shelfId'], $pdo);
-				}
+					echo(getShelfItemQuantity($_POST['itemId'], $_POST['shelfId'], $pdo));
 				break;
 			case 'createShelf':
 				if(isset($_POST['label']))
