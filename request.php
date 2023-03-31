@@ -45,11 +45,6 @@ if(isset($_POST['type']))
 	$stmt->execute([$token]);
 	
 	if($stmt->rowCount())
-		$valid_token = true;
-	else
-		$valid_token = false;
-	
-	if($valid_token)
 	{
 		switch($_POST['type'])
 		{
@@ -556,8 +551,8 @@ function deleteShelf($id, $pdo)
 
 function deleteAlias($barcode, $pdo)
 {
-	$stmt = $pdo->prepare('DELETE FROM aliases WHERE id = ?');
-	$stmt->execute([$id]);
+	$stmt = $pdo->prepare('DELETE FROM aliases WHERE barcode = ?');
+	$stmt->execute([$barcode]);
 }
 
 ?>
