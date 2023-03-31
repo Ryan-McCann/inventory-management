@@ -549,7 +549,7 @@ function deleteItem($id, $pdo)
 function deleteShelf($id, $pdo)
 {
 	$stmt = $pdo->prepare('DELETE FROM inventory WHERE shelf_id = ?');
-	$stmt->execute($id);
+	$stmt->execute([$id]);
 	$stmt = $pdo->prepare('DELETE FROM shelves WHERE id = ?');
 	$stmt->execute([$id]);
 }
