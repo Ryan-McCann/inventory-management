@@ -308,6 +308,16 @@ function getItemsPartial($pdo)
 		$item->minimum = $row['minimum'];
 		$item->maximum = $row['maximum'];
 		
+		$stmt = $pdo->prepare('SELECT * FROM inventory WHERE item_id = ?');
+		$stmt->execute([$item->id]);
+		
+		$inv_rows = $stmt->fetchAll();
+		
+		foreach($inv_rows as $inv_row)
+		{
+			$item->quantity += $inv_row['quantity'];
+		}
+		
 		array_push($items, $item);
 	}
 	
