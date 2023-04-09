@@ -66,7 +66,7 @@ if(isset($_POST['type']))
 				
 				break;
 			case 'items':
-				$items = getItemsPartial($pdo);
+				$items = getItems($pdo);
 				
 				echo(json_encode($items, JSON_PRETTY_PRINT));
 				break;
@@ -299,40 +299,6 @@ function getItemById($item_id, $pdo)
 		}
 	}
 	return $item;
-}
-
-function getItemsPartial($pdo)
-{
-	$items = [];
-	
-	$stmt = $pdo->prepare("SELECT * FROM items");
-	$stmt->execute();
-	$item_rows = $stmt->fetchAll();
-	
-	foreach($item_rows as $row)
-	{
-		$item = new Item();
-		$item->id = $row['id'];
-		$item->description = $row['description'];
-		$item->minimum = $row['minimum'];
-		$item->maximum = $row['maximum'];
-		
-		$stmt = $pdo->prepare('SELECT * FROM inventory WHERE item_id = ?');
-		$stmt->execute([$item->id]);
-		
-		$inv_rows = $stmt->fetchAll();
-		
-		$item->quantity = 0;
-		
-		foreach($inv_rows as $inv_row)
-		{
-			$item->quantity += $inv_row['quantity'];
-		}
-		
-		array_push($items, $item);
-	}
-	
-	return $items;
 }
 
 function getItems($pdo)
