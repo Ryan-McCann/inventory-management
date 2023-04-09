@@ -1,6 +1,7 @@
 <?php
 require("includes/Item.php");
 require("includes/Shelf.php");
+require("includes/ShelfQuantity.php");
 require("includes/util.php");
 
 header('Content-Type: application/json');
@@ -272,7 +273,15 @@ function getItemById($item_id, $pdo)
 			foreach($quantities as $row)
 			{
 				$item->quantity += $row['quantity'];
-				array_push($item->shelves, $row['shelf_id']);
+				$shelf_quantity = new ShelfQuantity();
+				$shelf = getShelfById($row['shelf_id']);
+				
+				$shelf_quantity->id = $shelf->id;
+				$shelf_quantity->label = $shelf->label;
+				$shelf_quantity->barcode = $shelf->barcode;
+				$shelf_quantity->item_quantity = $row['quantity'];
+				
+				array_push($item->shelves, $shelf_quantity);
 			}
 		}
 		
@@ -312,6 +321,8 @@ function getItemsPartial($pdo)
 		$stmt->execute([$item->id]);
 		
 		$inv_rows = $stmt->fetchAll();
+		
+		$item->quantity = 0;
 		
 		foreach($inv_rows as $inv_row)
 		{
@@ -361,7 +372,15 @@ function getItems($pdo)
 			foreach($quantities as $quant_row)
 			{
 				$item->quantity += $quant_row['quantity'];
-				array_push($item->shelves, $quant_row['shelf_id']);
+				$shelf_quantity = new ShelfQuantity();
+				$shelf = getShelfById($quant_row['shelf_id']);
+				
+				$shelf_quantity->id = $shelf->id;
+				$shelf_quantity->label = $shelf->label;
+				$shelf_quantity->barcode = $shelf->barcode;
+				$shelf_quantity->item_quantity = $quant_row['quantity'];
+				
+				array_push($item->shelves, $shelf_quantity);
 			}
 		}
 		
@@ -469,23 +488,6 @@ function getShelfByLabel($label, $pdo)
 	}
 	
 	return $shelf;
-}
-
-function getShelfItemQuantity($item_id, $shelf_id, $pdo)
-{
-	$quantity = 0;
-	
-	$stmt = $pdo->prepare('SELECT * FROM inventory WHERE item_id = ? AND shelf_id = ?');
-	$stmt->execute([$item_id, $shelf_id]);
-	
-	$inventory_result = $stmt->fetch();
-	
-	if($stmt->rowCount())
-	{
-		$quantity = $inventory_result['quantity'];
-	}
-	
-	return $quantity;
 }
 
 // This function is used to add the specified quantity of an item to a shelf
