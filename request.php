@@ -328,7 +328,7 @@ function getItems($pdo)
 		}
 		
 		$stmt = $pdo->prepare('SELECT * FROM inventory WHERE item_id = ?');
-		$stmt->execute([$item_id]);
+		$stmt->execute([$item->id]);
 		$quantities = $stmt->fetchAll();
 		
 		$item->quantity = 0;
