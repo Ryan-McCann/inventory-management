@@ -339,7 +339,7 @@ function getItems($pdo)
 			{
 				$item->quantity += $quant_row['quantity'];
 				$shelf_quantity = new ShelfQuantity();
-				$shelf = getShelfById($quant_row['shelf_id']);
+				$shelf = getShelfById($quant_row['shelf_id'], $pdo);
 				
 				$shelf_quantity->id = $shelf->id;
 				$shelf_quantity->label = $shelf->label;
