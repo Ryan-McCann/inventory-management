@@ -324,7 +324,7 @@ function getItems($pdo)
 		
 		foreach($barcode_rows as $barcode_row)
 		{
-			array_push($items->barcodes, $barcode_row['UPC']);
+			array_push($item->barcodes, $barcode_row['UPC']);
 		}
 		
 		$stmt = $pdo->prepare('SELECT * FROM inventory WHERE item_id = ?');
